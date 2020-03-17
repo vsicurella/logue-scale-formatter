@@ -1,0 +1,22 @@
+{
+  "name": "webio",
+  "version": "1.0.0",
+  "description": "Testing for web file io",
+  "main": "main.js",
+  "scripts": {
+    "test": "npx main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "none"
+  },
+  "keywords": [
+    "none"
+  ],
+  "author": "Vincenzo Sicurella",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "jszip": "^3.2.2"
+  }
+}

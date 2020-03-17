@@ -1,31 +1,24 @@
 <!DOCTYPE html>
 <head>
     <title>Minilogue File Test Server</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body onresize="resize()">
-    <p>Welcome to the Minilogue Scale File creation app.</p>
-    <p>Use the below boxes to create a scale and export a Minilogue Scale File for use with Minilogue Sound Librarian</p>
-    <div id="root" style="margin:5px;padding:5px;display:flex;">
-        <iframe 
-            id="scaletool"
-            title="ScaleTool"
-            width="500"
-            height="500"
-            src="./mnlgtun.html"
-            onload="resize()">
-        </iframe>
+<body>
+    <div id="root" class="flex-container">
+        <div id="wecome-message" class="message">
+            <p>Welcome to the Minilogue Scale File creation app.</p>
+            <p>Use the below boxes to create a scale and export a Minilogue Scale File for use with Minilogue Sound Librarian</p>
+        </div>
+        <div id="app-container" class="container">
+            <iframe 
+                id="scaletool"
+                title="ScaleTool"
+                width="100%"
+                height="100%"
+                src="./mnlgtun.html">
+            </iframe>
+        </div>
     </div>
-
     <script type="text/javascript">
-        function resize() {
-            let frame = document.getElementById("scaletool")
-            let scale = frame.contentDocument.getElementById('scale')
-            let bin = frame.contentDocument.getElementById('binary')
-            let elements = [scale, bin]
-            elements.forEach( element => {
-                console.log(element)
-                element.style.height = frame.scrollHeight*2/3 + "px"
-            })
-        }
     </script>
 </body>

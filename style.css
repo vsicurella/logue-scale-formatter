@@ -1,0 +1,87 @@
+html {
+    font-family: sans-serif;
+}
+
+body {
+    background-color: #BCBCBC;
+}
+
+iframe {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 600px;
+    height: 100%;
+    border: none;
+}
+
+textarea {
+    overflow: auto;
+}
+
+button {
+    margin: 5px;
+    min-height: 100%;
+}
+
+.container {
+    margin:5px;
+    padding:5px;
+    display:flex;
+    flex-direction: row;
+    max-height: 440px;
+}
+
+.convert {
+    font-size: small;
+    font-stretch: condensed;
+    min-height: 20%;
+}
+
+#scale-container, #binary-container, #convertBtn-container {
+    flex-direction: column;
+    max-height: 600px;
+}
+
+#input-container {
+    margin-top: 20%;
+    align-items: center;
+}
+
+#export-container {
+    align-items: center;
+}
+
+#scale-container {
+    min-width: 50px;
+    max-width: 10%;
+}
+
+#binary-container {
+    padding: 3px;
+}
+
+#edoInput {
+    width: 1cm;
+    height: 80%;
+    margin: 2px;
+    font-size: medium;
+    text-align: center;
+}
+
+#scale {
+    width: 100%;
+    min-height: 240px;
+    height: 100%;
+}
+
+#binary {
+    width: 100%;
+    min-height: 220px;
+    height: 80%;
+}
+
+#name {
+    padding: 3px;
+    height: 80%;
+}

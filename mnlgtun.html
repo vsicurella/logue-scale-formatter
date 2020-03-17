@@ -1,27 +1,32 @@
 <!DOCTYPE html>
 <head>
-
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div style='display:flex' style='flex-direction:row'>
-        <div id="scale-container" style='flex-direction:column'>
-            <input id="edoInput">EDO:</input>
-            <button id="getScale">Go</button><br>
-            <textarea id="scale"></textarea><br>
-            <button onclick="convertOctave()">Convert Octave</button>
-            <button onclick="convertScale()">Convert Scale</button>
+    <div id="app-root" class="container">
+        <div id="scale-container" class="container">
+            <textarea id="scale"></textarea>
+        </div>    
+        <div id="convertBtn-container" class="container">
+            <div id="input-container" class="container">
+                <input id="edoInput" placeholder="12"></input>
+                <button id="getScale">EDO</button>
+            </div>
+            <button class="convert" onclick="convertOctave()">Convert Octave ></button>
+            <button class="convert" onclick="convertScale()">Convert Scale ></button>
         </div>
-        <div id="binary-container" style='flex-direction:column'>
-            <textarea id="binary" for="bindata"></textarea><br>
-            <input name="name" placeholder="Enter file name" oninput="() => nameInput=this.value"></input>
-            <button onclick="exportClicked()">Export</button>
+        <div id="binary-container" class="container">
+            <textarea id="binary" placeholder="NO DATA" for="bindata"></textarea><br>
+            <div id="export-container" class="container">
+                <input id="name" name="name" placeholder="Enter file name" oninput="() => nameInput=this.value"></input>
+                <button onclick="exportClicked()">Export</button>
+            </div>
         </div>
     </div>
     <script src="./lib/jszip/dist/jszip.js"></script>
     <script src="./lib/FileSaver.js-2.0.2/src/FileSaver.js"></script>
     <script src="mnlgtun.js" type="text/javascript"></script>
     <script type="text/javascript">
-
         function exportClicked() {
             console.log(scale)
             var filename = nameInput !== "" ? nameInput : lastPressedConvertScale ? 'mytuning.mnlgtuns' : 'mytuning.mnlgtuno'
@@ -29,19 +34,6 @@
                 fileSaverDownload(true, filename)
             else
                 fileSaverDownload(false, filename)
-        }
-
-        function sendDataToServer() {
-            var blob = new Blob([bindata], {type: "octet/stream"})
-            let data = new FormData()
-            data.append('scaledata', blob, 'TunS_000.TunS_bin')
-            fetch('/createFile', {
-                method: 'post',
-                body: JSON.stringify({
-                    scaledata: data
-                })
-            })
-        }
-    
+        }    
     </script>
 </body>

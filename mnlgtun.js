@@ -97,33 +97,6 @@ function downloadData() {
     window.URL.revokeObjectURL(url)
 }
 
-function easyZip(useScale=true, filename="scale.mnlgtuno") {
-    let tunbin = useScale ? 'TunS_000.TunS_bin' : 'TunO_000.TunO_bin'
-    let infobin = useScale ? 'TunS_000.TunS_info' : 'TunO_000.TunO_info'
-    let infobinpath = useScale ? './tuneScaleInformation.xml' : './tuneOctaveInformation.xml'
-    let filexmlpath = useScale ? './scaleFileInformation.xml' : './octaveFileInformation.xml'
-    
-    let zip = new JSZip()
-    zip.file(tunbin, bindata)
-    fetch(infobinpath)
-    .then( response => { 
-        //console.log(result.text())
-        zip.file(infobin, response.text())
-    })
-    .then( () => {
-        fetch(filexmlpath).then( response => {
-            //console.log(response.text())
-            zip.file('FileInformation.xml', response.text())
-    
-        })
-        .then( () => {
-                zip.generateAsync({type:"base64"}).then( (base64) => {
-                    window.location = "data:application/zip;base64," + base64
-                }, (err) => console.log )
-        })
-    })
-}
-
 function fileSaverDownload(useScale=true, filename="scale.mnlgtuno") {
     let tunbin = useScale ? 'TunS_000.TunS_bin' : 'TunO_000.TunO_bin'
     let infobin = useScale ? 'TunS_000.TunS_info' : 'TunO_000.TunO_info'

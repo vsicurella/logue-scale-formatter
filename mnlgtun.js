@@ -10,6 +10,7 @@ const SCALETUNINGSIZE = 128
 
 const cents_to_bin = (cents, bytestringOut) => {
     if (cents < 0) cents = 0
+    else if (cents >= 12800) cents = 12800
     let semitones = parseInt(cents) / 100.0
     let coarseSteps = Math.floor(semitones)
     let fractionalSteps = semitones - coarseSteps
@@ -38,8 +39,26 @@ function injectScale() {
     document.getElementById('scale').textContent = scale.join('\n')
 }
 
+function checkNameInput() {
+    let name = document.getElementById('name').value.split('.')
+    
+    while (name.length < 2) {
+        name.push('')
+    }
+
+    if (name[0] === '')
+        name[0] = 'tuning'
+
+    if (lastPressedConvertScale) {
+        name[name.length-1] = 'mnlgtuns'
+    } else {
+        name[name.length-1] = 'mnlgtuno'
+    }
+
+    document.getElementById('name').value = name.join('.')
+}
+
 function formatScale() {
-    console.log("formatting scale")
     scale = document.getElementById('scale').value.split('\n').map(c => parseFloat(c))
     
     // pad so that scale is at least 128 notes
@@ -49,9 +68,6 @@ function formatScale() {
 
     let rootMidiNote = parseInt(document.getElementById('midiRootInput').value)
     let rootFreq = parseFloat(document.getElementById('rootFreqInput').value)
-
-    console.log(rootMidiNote)
-    console.log(rootFreq)
 
     var goodInput = (rootMidiNote >= 0 && rootMidiNote < 128) && (rootFreq >= 20 && rootFreq < 16e3)
     if (!goodInput)
@@ -69,7 +85,6 @@ function formatScale() {
     let scaleDifference = currentRootCents - rootCentsDifference
 
     scale = scale.map(c => c - scaleDifference)
-    console.log(scale)
     injectScale()
 }
 
@@ -120,21 +135,9 @@ function convertOctave() {
     document.getElementById('binary').textContent = binstring
 }
 
-function downloadData() {
-    var a = document.createElement("a")
-    document.body.appendChild(a)
-    a.style = "display: none"
-
-    var blob = new Blob([bindata], {type: "octet/stream"})
-    var url = window.URL.createObjectURL(blob)
-
-    a.href = url
-    a.download = "tuningdata.bin"
-    a.click()
-    window.URL.revokeObjectURL(url)
-}
-
-function fileSaverDownload(useScale=true, filename="scale.mnlgtuno") {
+function fileSaverDownload(useScale=true) {
+    checkNameInput()
+    let filename  = document.getElementById('name').value
     let tunbin = useScale ? 'TunS_000.TunS_bin' : 'TunO_000.TunO_bin'
     let infobin = useScale ? 'TunS_000.TunS_info' : 'TunO_000.TunO_info'
     let infobinpath = useScale ? './tuneScaleInformation.xml' : './tuneOctaveInformation.xml'

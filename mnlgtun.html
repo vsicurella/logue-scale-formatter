@@ -6,15 +6,28 @@
     <div id="app-root" class="container">
         <div id="scale-container" class="container">
             <textarea id="scale"></textarea>
-        </div>    
-        <div id="convertBtn-container" class="container">
-            <div id="input-container" class="container">
-                <input id="edoInput" placeholder="12"></input>
-                <button id="getScale">EDO</button>
-            </div>
-            <button class="convert" onclick="convertOctave()">Convert Octave ></button>
-            <button class="convert" onclick="convertScale()">Convert Scale ></button>
         </div>
+        <div id="format-container" class="container">
+            <div id="format-top" class="container">
+                <div id="input-container" class="container">
+                    <input id="edoInput" value="12" placeholder="12"></input>
+                    <button id="getScale">EDO</button>
+                </div>
+                <label>
+                    Root MIDI Note:
+                    <input id="midiRootInput" value="69" placeholder="69">
+                </label>
+                <label>
+                    Root Frequency:
+                    <input id="rootFreqInput" value="440.0" placeholder="440.0">
+                </label>
+                <button>Format Scale</button>
+            </div>
+            <div id="convertBtn-container" class="container">
+                <button class="convert" onclick="convertOctave()">Convert Octave ></button>
+                <button class="convert" onclick="convertScale()">Convert Scale ></button>
+            </div>
+        </div>  
         <div id="binary-container" class="container">
             <textarea id="binary" placeholder="NO DATA" for="bindata"></textarea><br>
             <div id="export-container" class="container">
@@ -29,7 +42,8 @@
     <script type="text/javascript">
         function exportClicked() {
             console.log(scale)
-            var filename = nameInput !== "" ? nameInput : lastPressedConvertScale ? 'mytuning.mnlgtuns' : 'mytuning.mnlgtuno'
+            var filename = document.getElementById('name').value
+            filename = filename !== "" ? filename : lastPressedConvertScale ? 'myscaletuning' : 'myoctavetuning'
             if (lastPressedConvertScale)
                 fileSaverDownload(true, filename)
             else

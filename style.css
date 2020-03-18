@@ -21,8 +21,16 @@ textarea {
 
 button {
     margin: 5px;
+    padding: 5px;
     min-height: 100%;
 }
+
+label input {
+    width: 25%;    
+    text-align: center;
+    margin-left: 5px;
+}
+
 
 .container {
     margin:5px;
@@ -38,23 +46,39 @@ button {
     min-height: 20%;
 }
 
-#scale-container, #binary-container, #convertBtn-container {
+#scale-container, 
+#binary-container, 
+#convertBtn-container, 
+#format-container,
+#format-top {
     flex-direction: column;
     max-height: 600px;
 }
 
-#input-container {
-    margin-top: 20%;
+#format-container, #input-container, #export-container {
     align-items: center;
+    padding-top: 0;
 }
 
-#export-container {
-    align-items: center;
+#format-container {
+    flex-flow: wrap;
+    align-content: space-between;
+    justify-content: center;
+}
+
+#input-container {
+    padding-top: 0;
+    margin-bottom: 0;
+}
+
+#format-top {
+    padding-top: 0;
+    place-items: inherit;
 }
 
 #scale-container {
+    width: fit-content; 
     min-width: 50px;
-    max-width: 10%;
 }
 
 #binary-container {
@@ -70,7 +94,9 @@ button {
 }
 
 #scale {
-    width: 100%;
+    width: 115%;
+    min-width: 55px;
+    max-width: 115%;
     min-height: 240px;
     height: 100%;
 }
@@ -85,3 +111,12 @@ button {
     padding: 3px;
     height: 80%;
 }
+
+
+#format-container label {
+    display: flow-root;
+    font-size: smaller;
+    text-align: center;
+    margin-bottom: 5px;
+}
+

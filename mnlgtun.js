@@ -27,8 +27,9 @@ const cents_to_bin = (cents, bytestringOut) => {
 
 function edoScale(edo) {
     scale = []
-    for (let i = 0; i <= edo; i++) {
-        scale.push(1200 / edo * i)
+    var step = 1200 / parseInt(edo)
+    for (let i = 0; i <= SCALETUNINGSIZE; i++) {
+        scale.push(step * i)
     }
 }
 

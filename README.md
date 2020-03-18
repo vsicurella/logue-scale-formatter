@@ -7,4 +7,5 @@ DEPENDENCIES:
 Dependencies are standalone versions of the following JS libraries. They should be unzipped and go inside a folder called "lib". View the mnlgtun.html file for the exact path name.
 
 JSZip: https://stuk.github.io/jszip/
+
 FileSaver: https://github.com/eligrey/FileSaver.js/

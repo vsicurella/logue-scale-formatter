@@ -9,6 +9,7 @@ const OCTAVETUNINGSIZE = 12
 const SCALETUNINGSIZE = 128
 
 const cents_to_bin = (cents, bytestringOut) => {
+    if (cents < 0) cents = 0
     let semitones = parseInt(cents) / 100.0
     let coarseSteps = Math.floor(semitones)
     let fractionalSteps = semitones - coarseSteps
@@ -35,6 +36,41 @@ function edoScale(edo) {
 
 function injectScale() {
     document.getElementById('scale').textContent = scale.join('\n')
+}
+
+function formatScale() {
+    console.log("formatting scale")
+    scale = document.getElementById('scale').value.split('\n').map(c => parseFloat(c))
+    
+    // pad so that scale is at least 128 notes
+    while (scale.length < 128) {
+        scale.push(scale[scale.length-1])
+    }
+
+    let rootMidiNote = parseInt(document.getElementById('midiRootInput').value)
+    let rootFreq = parseFloat(document.getElementById('rootFreqInput').value)
+
+    console.log(rootMidiNote)
+    console.log(rootFreq)
+
+    var goodInput = (rootMidiNote >= 0 && rootMidiNote < 128) && (rootFreq >= 20 && rootFreq < 16e3)
+    if (!goodInput)
+        alert("Warning, input not parsed successfully.")
+    
+    rootMidiNote = goodInput ? rootMidiNote : 69
+    rootFreq = goodInput ? rootFreq : 440
+
+    let currentRootCents = scale[rootMidiNote]
+    
+    // calculate Frequency offset
+    // find closest note in 12edo a4=440
+    let rootCentsFromA = Math.log2(440 / rootFreq) * 1200
+    let rootCentsDifference = 6900 - rootCentsFromA
+    let scaleDifference = currentRootCents - rootCentsDifference
+
+    scale = scale.map(c => c - scaleDifference)
+    console.log(scale)
+    injectScale()
 }
 
 function convertScale() {

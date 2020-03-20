@@ -104,7 +104,7 @@ function formatScale() {
 
 function parseScala() {
     let text = document.getElementById('scale').value
-    text = text.split('\n').filter( c => !['!', undefined].includes(c[0]) ).slice(1)
+    text = text.slice(text.match(/\d+[\n\r]![\n\r\ ]+\d+/).index).split('\n').slice(2)
     console.log(text)
     // parse forms of notes
     let pitches = text.map( pitch => {
@@ -144,18 +144,19 @@ function parseScala() {
     rootFreq = goodInput ? rootFreq : 440
     
     let rootCentsFrom440 = Math.log2(rootFreq / 440) * 1200
-    //let rootDifference = 6900 - rootMidiNote * 100
-    let scaleOffset =  6900 + rootCentsFrom440
+    let scaleOffset =  6900 + rootCentsFrom440 
     console.log("Scale tuning offset: " + scaleOffset)
 
-    scale = []
     // First value is placed on given Root MIDI note, so we start at a certain offset
-    let index = pitches.length - (rootMidiNote % pitches.length)
-    let periods = -Math.round(rootMidiNote / pitches.length)
+    let index = (pitches.length - mod(rootMidiNote, pitches.length)) % pitches.length
+    let periods = -Math.trunc(rootMidiNote / pitches.length) - 1
+    scale = []
     for (let i = 0; i < 128; i++) {
+        if (mod(index, pitches.length) === 0)
+            periods++
+
         scale.push(pitches[mod(index, pitches.length)] + (period * periods) + scaleOffset)
         index++
-        periods += index % pitches.length == 0 ? 1 : 0
     }
 
     injectScale()

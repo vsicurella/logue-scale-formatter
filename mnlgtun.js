@@ -66,6 +66,8 @@ function formatScale() {
         scale.push(scale[scale.length-1])
     }
 
+    let offset = parseInt(document.getElementById('offsetInput').value)
+
     let rootMidiNote = parseInt(document.getElementById('midiRootInput').value)
     let rootFreq = parseFloat(document.getElementById('rootFreqInput').value)
 
@@ -84,8 +86,20 @@ function formatScale() {
     let rootCentsDifference = 6900 - rootCentsFromA
     let scaleDifference = currentRootCents - rootCentsDifference
 
-    scale = scale.map(c => c - scaleDifference)
+    // apply difference and note offset
+    scale = scale.map( (cents, index) => {
+        index += offset
+        if (index < 0 || index >= scale.length)
+            return 0
+        else
+            return scale[index] - scaleDifference
+    })
+
     injectScale()
+}
+
+function parseScala() {
+
 }
 
 function convertScale() {

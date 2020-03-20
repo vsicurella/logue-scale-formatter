@@ -8,6 +8,10 @@ var lastPressedConvertScale = false
 const OCTAVETUNINGSIZE = 12
 const SCALETUNINGSIZE = 128
 
+const mod = (num, modulus) => ((num % modulus) + modulus) % modulus
+
+const ratioToCents = r => r.split('/').map(n => parseInt(n) ).reduce( (a, b) => Math.log2( a / b) * 1200)
+
 const cents_to_bin = (cents, bytestringOut) => {
     if (cents < 0) cents = 0
     else if (cents >= 12800) cents = 12800
@@ -36,7 +40,7 @@ function edoScale(edo) {
 }
 
 function injectScale() {
-    document.getElementById('scale').textContent = scale.join('\n')
+    document.getElementById('scale').value = scale.join('\n')
 }
 
 function checkNameInput() {
@@ -73,7 +77,7 @@ function formatScale() {
 
     var goodInput = (rootMidiNote >= 0 && rootMidiNote < 128) && (rootFreq >= 20 && rootFreq < 16e3)
     if (!goodInput)
-        alert("Warning, input not parsed successfully.")
+        alert("Warning, input was not parsed successfully.")
     
     rootMidiNote = goodInput ? rootMidiNote : 69
     rootFreq = goodInput ? rootFreq : 440
@@ -99,7 +103,63 @@ function formatScale() {
 }
 
 function parseScala() {
+    let text = document.getElementById('scale').value
+    text = text.split('\n').filter( c => !['!', undefined].includes(c[0]) ).slice(1)
+    console.log(text)
+    // parse forms of notes
+    let pitches = text.map( pitch => {
+        // strip comment
+        let commentIndex = pitch.indexOf('!')
+        if (commentIndex > -1)
+            pitch = pitch.slice(0, commentIndex)
 
+        // determine pitch type
+        if (pitch.includes('.')) {
+            return parseFloat(pitch)
+        } else if (pitch.includes('/')) {
+            return ratioToCents(pitch)
+        } else if (parseFloat(pitch) < 0) {
+            alert("Invalid negative pitch found!")
+            return 0
+        } else {
+            return Math.log2(parseInt(pitch)) * 1200
+        }
+    })
+
+    console.log(pitches)
+
+    let period = pitches.pop()
+    pitches.unshift(0)
+
+    // using the mapping settings, generate a 128 note set
+    let offset = parseInt(document.getElementById('offsetInput').value)
+    let rootMidiNote = parseInt(document.getElementById('midiRootInput').value)
+    let rootFreq = parseFloat(document.getElementById('rootFreqInput').value)
+
+    var goodInput = (rootMidiNote >= 0 && rootMidiNote < 128) && (rootFreq >= 20 && rootFreq < 16e3)
+    if (!goodInput)
+        alert("Warning, input was not parsed successfully.")
+    
+    rootMidiNote = goodInput ? rootMidiNote : 69
+    rootFreq = goodInput ? rootFreq : 440
+    
+    let rootCentsFrom440 = Math.log2(rootFreq / 440) * 1200
+    //let rootDifference = 6900 - rootMidiNote * 100
+    let scaleOffset =  6900 + rootCentsFrom440
+    console.log("Scale tuning offset: " + scaleOffset)
+
+    scale = []
+    // First value is placed on given Root MIDI note, so we start at a certain offset
+    let index = pitches.length - (rootMidiNote % pitches.length)
+    let periods = -Math.round(rootMidiNote / pitches.length)
+    for (let i = 0; i < 128; i++) {
+        scale.push(pitches[mod(index, pitches.length)] + (period * periods) + scaleOffset)
+        index++
+        periods += index % pitches.length == 0 ? 1 : 0
+    }
+
+    injectScale()
+    convertScale()
 }
 
 function convertScale() {

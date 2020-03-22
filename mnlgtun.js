@@ -3,6 +3,10 @@ let binstring = ""
 let bindata
 let nameInput = ""
 
+let uploadPath = ""
+let uploadFile
+let uploadBinString
+
 var lastPressedConvertScale = false
 
 const OCTAVETUNINGSIZE = 12
@@ -39,7 +43,7 @@ const binaryToCents = (binStringIn) => {
         
         let hundreds = str.charCodeAt(0) * 100
         let tens = new Uint8Array([str.charCodeAt(2), str.charCodeAt(1)])
-        tens = parseInt(new Uint16Array(tens.buffer)) / 0x8000 * 100
+        tens = Math.trunc(parseInt(new Uint16Array(tens.buffer)) / 0x8000 * 100)
         centsOut.push(hundreds + tens)
     }
 
@@ -178,6 +182,10 @@ function parseScala() {
     convertScale()
 }
 
+function importClicked() {
+    let f = document.getElementById('upload')
+}
+
 function convertScale() {
     let dataSize = SCALETUNINGSIZE * 3
     bindata = new Uint8Array(dataSize)
@@ -225,12 +233,28 @@ function convertOctave() {
     document.getElementById('binary').textContent = binstring
 }
 
-function convertBinary() {
-    let str = document.getElementById('binary').value
-    let cents = binaryToCents(str)
-    if (cents.length > 0) {
-        document.getElementById('scale').value = cents.join('\n')
-    }
+function processImportedFile() {
+    // unzip uploaded file
+    let zip = new JSZip()
+    zip.loadAsync(uploadFile)
+        .then(result => {
+            // check if meets size requirements
+            let bin = result.files[Object.keys(result.files)[0]]
+            if (bin.name.endsWith('_bin') && bin['_data'].uncompressedSize % 3 === 0) {
+                uploadBinString = bin['_data'].compressedContent.reduce((a, b) => a + String.fromCharCode(b), "")
+                console.log(uploadBinString)
+
+                // extract bin info to string
+                document.getElementById('binary').value = uploadBinString
+                let cents = binaryToCents(uploadBinString)
+                if (cents.length > 0) {
+                    document.getElementById('scale').value = cents.join('\n')
+                }
+            } else {
+                alert("Not a valid tuning file.")
+                return
+            }
+        })
 }
 
 function fileSaverDownload(useScale=true) {
@@ -260,10 +284,17 @@ function fileSaverDownload(useScale=true) {
     })
 }
 
-document.getElementById("getScale").onclick = (event) => {
+document.getElementById("getScale").onclick = () => {
     let divisions = parseInt(document.getElementById("edoInput").value)
     edoScale(divisions)
     injectScale()
+}
+
+document.getElementById("upload").onchange = (event) => {
+    let f = event.target.files[0]
+    if (f) {
+        uploadFile = f
+    }
 }
 
 

@@ -55,7 +55,10 @@ label input {
     max-height: 600px;
 }
 
-#format-container, #input-container, #export-container {
+#format-container, 
+#input-container, 
+#export-container,
+#import-container {
     align-items: center;
     padding-top: 0;
 }
@@ -107,7 +110,8 @@ label input {
     height: 80%;
 }
 
-#name {
+#name,
+#upload  {
     padding: 3px;
     height: 80%;
 }

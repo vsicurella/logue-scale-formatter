@@ -31,14 +31,17 @@
             <div id="convertBtn-container" class="container">
                 <button class="convert" onclick="convertOctave()">Convert Octave ></button>
                 <button class="convert" onclick="convertScale()">Convert Scale ></button>
-                <button class="convert" onclick="convertBinary()">< Convert Binary</button>
             </div>
         </div>  
         <div id="binary-container" class="container">
             <textarea id="binary" placeholder="NO DATA" for="bindata"></textarea><br>
             <div id="export-container" class="container">
-                <input id="name" name="name" placeholder="Enter file name" oninput="() => nameInput=this.value"></input>
+                <input id="name" name="name" placeholder="Enter file name"></input>
                 <button onclick="exportClicked()">Export</button>
+            </div>
+            <div id="import-container" class="container">
+                <input id="upload" name="file-upload" type="file" multiple="false"></input>
+                <button onclick="processImportedFile()">Convert Binary</button>
             </div>
         </div>
     </div>

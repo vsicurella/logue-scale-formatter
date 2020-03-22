@@ -12,7 +12,7 @@ const mod = (num, modulus) => ((num % modulus) + modulus) % modulus
 
 const ratioToCents = r => r.split('/').map(n => parseInt(n) ).reduce( (a, b) => Math.log2( a / b) * 1200)
 
-const cents_to_bin = (cents, bytestringOut) => {
+const centsToBinary = (cents, binstringOut) => {
     if (cents < 0) cents = 0
     else if (cents >= 12800) cents = 12800
     let semitones = parseInt(cents) / 100.0
@@ -26,9 +26,24 @@ const cents_to_bin = (cents, bytestringOut) => {
     let u8a = new Uint8Array(u16a.buffer)
 
     let binarray = new Uint8Array([coarseSteps, u8a[1], u8a[0]])
-    bytestringOut = bit0 + String.fromCharCode(u8a[1]) + String.fromCharCode(u8a[0])
+    binstringOut = bit0 + String.fromCharCode(u8a[1]) + String.fromCharCode(u8a[0])
 
     return binarray
+}
+
+const binaryToCents = (binStringIn) => {
+    let centsOut = []
+    const tuningSize = binStringIn.length / 3
+    for (let i = 0; i < tuningSize; i++) {
+        let str = binStringIn.slice(i * 3, i * 3 + 3)
+        
+        let hundreds = str.charCodeAt(0) * 100
+        let tens = new Uint8Array([str.charCodeAt(2), str.charCodeAt(1)])
+        tens = parseInt(new Uint16Array(tens.buffer)) / 0x8000 * 100
+        centsOut.push(hundreds + tens)
+    }
+
+    return centsOut
 }
 
 function edoScale(edo) {
@@ -175,7 +190,7 @@ function convertScale() {
         if (i < scale.length)
             cents = scale[i]
         
-        let binarray = cents_to_bin(cents)
+        let binarray = centsToBinary(cents)
         for (let b = 0; b < 3; b++) {
             let bit = b < binarray.length ? binarray[b] : 0
             bindata[(i * 3) + b] = bit
@@ -198,7 +213,7 @@ function convertOctave() {
         if (i < scale.length)
             cents = scale[i]
         
-        let binarray = cents_to_bin(cents)
+        let binarray = centsToBinary(cents)
         for (let b = 0; b < 3; b++) {
             let bit = b < binarray.length ? binarray[b] : 0
             bindata[(i * 3) + b] = bit
@@ -208,6 +223,14 @@ function convertOctave() {
     bindata.forEach( b => binstring += String.fromCharCode(b))
     lastPressedConvertScale = false
     document.getElementById('binary').textContent = binstring
+}
+
+function convertBinary() {
+    let str = document.getElementById('binary').value
+    let cents = binaryToCents(str)
+    if (cents.length > 0) {
+        document.getElementById('scale').value = cents.join('\n')
+    }
 }
 
 function fileSaverDownload(useScale=true) {
